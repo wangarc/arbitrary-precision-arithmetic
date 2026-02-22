@@ -510,20 +510,20 @@ int bigInt_parse(const char * str, int * p_or_n, int * i_qty, int * d_qty, int *
 		return 9;		//Error: no valid number found
 	if (*dot_pos == -1)	//there is no '.' in the str, str is an integer
 		*dot_pos = index;	//dot_pos set at '\0'(str end) for "no dot" integer
-	//ignore excessive '0' in the end of decimal part
-	if (*i_qty > 0)
-		while (*d_qty > 0 && str[*dot_pos + *d_qty] == '0')
-			--(*d_qty);
-	else
-		while (*d_qty > 1 && str[*dot_pos + *d_qty] == '0')
-			--(*d_qty);	//leave 1 char at least
-	//ignore excessive '0' in the begining of integeral part
-	if (*d_qty > 0)
-		while (*i_qty > 0 && str[*dot_pos - *i_qty] == '0')
-			--(*i_qty);
-	else
-		while (*i_qty > 1 && str[*dot_pos - *i_qty] == '0')
-			--(*i_qty);	//leave 1 char at least
+	////ignore excessive '0' in the end of decimal part
+	//if (*i_qty > 0)
+	//	while (*d_qty > 0 && str[*dot_pos + *d_qty] == '0')
+	//		--(*d_qty);
+	//else
+	//	while (*d_qty > 1 && str[*dot_pos + *d_qty] == '0')
+	//		--(*d_qty);	//leave 1 char at least
+	////ignore excessive '0' in the begining of integeral part
+	//if (*d_qty > 0)
+	//	while (*i_qty > 0 && str[*dot_pos - *i_qty] == '0')
+	//		--(*i_qty);
+	//else
+	//	while (*i_qty > 1 && str[*dot_pos - *i_qty] == '0')
+	//		--(*i_qty);	//leave 1 char at least
 	return 0;
 }
 
@@ -817,7 +817,7 @@ int bigInt_copyToBufferPosition(const char * str, int i_qty, int d_qty, int dot_
 		return 35; //Error: bufferSize is not enough
 	int tempRetVal;
 	int nextIndexToFill;
-	if (position[0] == 's') //fill at a position close to the start of the buffer
+	if (position[0] == 's') //fill at a position close to the start of the buffer.
 		nextIndexToFill = safeSpaceBeforeHead;
 	else if (position[0] == 'e') //fill at a position close to the end of the buffer.
 		nextIndexToFill = bufferSize - safeSpaceAfterTail - aligned_d_size - aligned_i_size;

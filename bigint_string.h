@@ -1,5 +1,5 @@
-#ifndef _BIGINT_STRING_H_
-#define _BIGINT_STRING_H_
+#ifndef BIGINT_STRING_H__
+#define BIGINT_STRING_H__
 
 
 /*	warning: you have to check the return value first BEFORE read the result string!
@@ -13,17 +13,21 @@
  *	bigInt_divDecimal() : bigint strings div : 123.456 / 78.9 = 1.564714828897...
  *  bigInt_divRound()   : bigint strings div : 123.456 / 78.9 = 1.564715 (n_digits = 6)
  *  bigInt_decimalRound() can be used individually for round operation.
- * 
- *  buffer size required for add: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 2
- *	buffer size required for sub: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 2
- *	buffer size required for mul: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
- *	buffer size required for divInteger: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
- *	buffer size required for divDecimal: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
+ *                          
+ *  minimun/suggested buffer size required:
+ *              add: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 2
+ *	            sub: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 2
+ *	            mul: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
+ *	     divInteger: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
+ *	     divDecimal: bufferSize >= (strlen(s1) + strlen(s2) + 8) * 3
+ *  (notes: bigger buffer size helps get more decimal digits for divDecimal function.)
  */
 
 /*	tips to read the program:
+* 
+ *  s, h, t, Size:
  *	variable named: s, s1, s2, s3, str, str1, str2 ... that's pointer to string.
- *	variable named: s1Size, s2Size, s3Size ... that's the allocated size of string.
+ *	variable named: s1Size, s2Size, s3Size ... that's the allocated memory size of string.
  *  variable named: h, h1, h2, h3 ... that's head, the index of first valid char in string.
  *	variable named: t, t1, t2, t3 ... that's tail, the index of last valid char in string.
  *	
@@ -34,7 +38,7 @@
  *                       s1[0]       s1[h1]         s1[t1]   s1[s1Size - 1]
  *  
  *	benefit of using h1 and t1 to indicate the first and last char in s1:
- *      1. it's no need to move chars if you want to insert a char ahead of s1[h1]
+ *      1. it's no need to move chars if you want to insert a char ahead/between of s1[h1]
  *	    2. it's no need to extend the size if you want to attach a char after s1[t1]
  *      3. h1 or t1 is limited within the range of 0 and s1Size - 1
  *      4. during calculation, '+', '-', '.' and '\0' is not included in the string
@@ -48,9 +52,19 @@
  *          ^                                      ^                                       ^
  *       safe space before head           space for result                 safe space after tail
  * 
- *  during add or sub calculation: result will directly writed on s1 or s2 
+ *  during add or sub calculation: result will directly writed at position of s1 or s2 
+ * 
  *  during mul calculation: result will start to write before s1 and a safe space
+ * 
+ *       ********s2 copied in the front*****************************s1 copied in the end********
+ *                                                             ^
+ *                                                      tail of mul result
+ * 
  *  during div calculation: result will start to write after s2 and a safe space
+ * 
+ *       ********s2 copied in the front*****************************s1 copied in the end********
+ *                                         ^
+ *                                  head of div result
  */
 
 
